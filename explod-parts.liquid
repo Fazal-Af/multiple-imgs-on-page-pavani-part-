@@ -1,0 +1,609 @@
+file name=> exploding-parts.liquid
+
+{{ 'exploding-parts.css' | asset_url | stylesheet_tag }}
+<div class="ep-main">
+  <div class="ep-wrapper ep-exploded">
+    <div class="ep-images-wrapper">
+        {% for block in section.blocks %}
+          {% case block.type %}
+            {% when 'image' %}
+              {% if block.settings.image != blank %}
+                <div id="image-main-{{ block.id }}" class="image-main" {% if block.settings.url != blank %} data-url="{{ block.settings.url }}" {% endif %}>
+                  <div class="image-wrapper">
+                    <div class="image-container">
+                      <img class="not_hover_img" src="{{ block.settings.image | image_url }}">
+                        {% if block.settings['hover-image'] != blank %}
+                        <img class="hover_img" src="{{ block.settings.hover-image | image_url }}">
+                          {% endif %}
+                      
+                    </div>
+                    {% if block.settings.hover-text-headline != blank or block.settings.hover-text != blank %}
+                    <div class="image-hover-text-main">
+                      <div class="image-hover-text-wrapper">
+                        <div class="iht-left">
+                          {{ block.settings.image-index }}.
+                        </div>
+                        <div class="iht-right">
+                          <div class="iht-headline">
+                          {{ block.settings.hover-text-headline }}
+                        </div>
+                        <div class="iht-text">
+                          {{ block.settings.hover-text }}
+                        </div>
+                        </div>
+                      </div>
+                    </div>
+                    {% endif %}
+                  </div>
+                </div>
+                <style>
+                  #image-main-{{ block.id }}{
+                    width:{{block.settings.width-mob}}%;
+                    left:{{block.settings.position-x-mob}}%;
+                    top:{{block.settings.position-y-mob}}%;
+                    transform:translate(-{{block.settings.position-x-mob}}%, -{{block.settings.position-y-mob}}%);
+                  }
+                   #image-main-{{ block.id }} .image-container img{
+                    transform: rotate({{block.settings.rotation-mob}}deg);
+                  }
+                  @media(min-width:768px){
+                   #image-main-{{ block.id }}{
+                    width:{{block.settings.width}}%;
+                    left:{{block.settings.position-x}}%;
+                    top:{{block.settings.position-y}}%;
+                    transform: translate(-{{block.settings.position-x}}%, -{{block.settings.position-y}}%);
+                   }
+                  #image-main-{{ block.id }} .image-container img{
+                    transform: rotate({{block.settings.rotation}}deg);
+                  }
+                  }
+                </style>
+              {% endif %}
+          {% endcase %}
+        {% endfor %}
+      </div>
+
+    
+    <div class="mpi-main">
+      <div class="mpi-wrapper">
+        {% for block in section.blocks %}
+          {% case block.type %}
+            {% when 'image' %}
+            {% if block.settings.image != blank %}
+              <div class="mpi-row-main" data-id="image-main-{{ block.id }}">
+                <div class="mpi-row-wrapper">
+                  <div class="mpi-top">
+                    <div class="mpi-top-left">
+                      {{ block.settings.image-index }}. {{ block.settings.hover-text-headline }}
+                    </div>
+                    <div class="mpi-top-right">
+                      {{ block.settings.hover-text }}
+                    </div>
+                  </div>
+                  <div class="mpi-bottom">
+                    {% if block.settings.url != blank %}
+                    <div class="mpi-detail mpi-button" onclick="window.location.href='{{ block.settings.url }}';">
+                      <a>View Details</a>
+                    </div>
+                    {% endif %}
+                    <div class="mpi-cancel mpi-button">
+                      Cancel
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+          {% endcase %}
+        {% endfor %}
+      </div>
+    </div>
+
+    
+  </div>
+  <div class="ep-list" style="display:none">
+    <div class="ep-list-wrapper ep-list-main">
+    {% for block in section.blocks %}
+      <div class="ep-list-row">
+          {% if block.settings.url != blank %}
+            <a href="{{ block.settings.url }}">
+          {% endif %}
+        <div class="ep-list-row-inner">
+          <div class="ep-list-row-index">
+            {% if block.settings.image-index != blank %}
+              {{ block.settings.image-index }}
+            {% else %}
+              {{ forloop.index }}
+            {% endif %}
+          </div>
+          <div class="ep-list-row-info">
+            {% if block.settings.hover-text-headline != blank %}
+            <div class="ep-list-title">
+              {{ block.settings.hover-text-headline }}
+            </div>
+            {% endif %}
+            {% if block.settings.hover-text != blank %}
+            <div class="ep-list-text">
+              {{ block.settings.hover-text }}
+            </div>
+            {% endif %}
+          </div>
+        </div>
+          {% if block.settings.url != blank %}
+            </a>
+          {% endif %}
+      </div>
+    {% endfor %}
+    </div>
+  </div>
+  <div class="ep-view-controls-main">
+    <div class="ep-controls-wrapper">
+      {% if section.settings.headline != blank %}
+        <div class="ep-headline">
+          {{ section.settings.headline }}
+        </div>
+      {% endif %}
+      <div class="ep-view-controller">
+        <div class="ep-view-controller-button active" data-view="exploded">Exploded View</div>
+        <div class="ep-view-controller-button" data-view="list">List View</div>
+      </div>
+    </div>
+  </div>
+  <div class="ep-zoom-control-main">
+    <div class="ep-zoom-control-wrapper">
+      <button class="sub"><img src="{{ "magnifier-remove.svg" | asset_url }}"></button>
+      <input type="range" orient="vertical" class="slider" value="0">
+      <button class="add"><img src="{{ "magnifier-add.svg" | asset_url }}"></button>
+    </div>
+  </div>
+</div>
+<style>
+  #shopify-section-{{section.id}} .ep-images-wrapper{
+    padding-top:{{section.settings.height-mob}}%;
+
+}
+  @media screen and (max-width:768px){
+  #shopify-section-{{section.id}} .ep-images-wrapper{
+    width:{{section.settings.width-mob}}%;
+    /* position: absolute;
+    left: 50%;
+    top: 0; 
+    transform: translateX(-50%); */
+  }
+  }
+  
+  @media(min-width:768px){
+  #shopify-section-{{section.id}} .ep-images-wrapper{
+    padding-top:{{section.settings.height}}%;
+  }
+    
+  
+}
+</style>
+<script>
+  
+  // // Calculate the scrollTop value based on the percentage
+  // const scrollYPosition = maxScrollY * scrollingPercentage;
+  
+  // // Scroll the div to the calculated position
+  // myDiv.scrollTop = scrollYPosition;
+  
+
+  
+  let zoom_input= document.querySelector('.ep-zoom-control-wrapper input'),
+    images_wrapper = document.querySelector('.ep-images-wrapper'),
+    list_wrapper = document.querySelector('.ep-list-main'),
+    init_width = images_wrapper.offsetWidth,
+    init_height = images_wrapper.offsetHeight,
+    ep_wrapper = document.querySelector('.ep-wrapper'),
+    mpi_wrapper= document.querySelector('.mpi-main .mpi-wrapper');
+    const epWrapperHeight  = ep_wrapper.scrollHeight;
+    const maxScrollY = ep_wrapper.scrollHeight - ep_wrapper.clientHeight;
+    const maxScrollX = ep_wrapper.scrollWidth - ep_wrapper.clientWidth;
+
+  // ===========================zoom part===================
+//  zoom_input.addEventListener('input',e=>{
+//       ep_wrapper.scrollTop = maxScroll * ((100-parseInt(e.target.value))/(100)) ;
+//     })
+//   document.querySelectorAll('.ep-zoom-control-wrapper button').forEach(btn=>{
+//     btn.addEventListener('click',e=>{
+//       btn.classList.contains('add')? ((zoom_input.value < 100) && (zoom_input.value = parseInt(zoom_input.value) + 1)) : (zoom_input.value > 0) && (zoom_input.value = parseInt(zoom_input.value) - 1);
+      
+//       let scale_val =  parseInt(zoom_input.value)/100.0 + 1;
+//       console.log("scale value",scale_val)
+//       images_wrapper.style.scale = scale_val ;
+//       images_wrapper.style.width +=scale_val;
+//       images_wrapper.style.height +=scale_val;
+//             ep_wrapper.scrollTop = maxScroll * ((100-parseInt(e.target.value))/(100)) ;
+//     })
+//   })
+
+// zoom_input.addEventListener('input', e => {
+//     const zoomValue = parseInt(e.target.value);
+//     const scaleValue = zoomValue / 100.0 + 1;
+//     images_wrapper.style.scale = scaleValue;
+//     images_wrapper.style.width +=scaleValue;
+//     images_wrapper.style.height +=scaleValue;
+//   ep_wrapper.scrollTop = maxScroll * ((100 - zoomValue) / 100);
+// });
+
+
+  // Store the initial width and height of the images_wrapper
+const initialWidth = images_wrapper.offsetWidth;
+const initialHeight = images_wrapper.offsetHeight;
+
+zoom_input.addEventListener('input', (e) => {
+    const zoomValue = parseInt(e.target.value);
+    const scaleValue = zoomValue / 100.0 + 1;
+    const newWidth = initialWidth * scaleValue;
+    const newHeight = initialHeight * scaleValue;
+
+    images_wrapper.style.transform = `scale(${scaleValue})`;
+    images_wrapper.style.width = newWidth + 'px';
+    images_wrapper.style.height = newHeight + 'px';
+
+    ep_wrapper.scrollTop = (maxScroll * (100 - zoomValue)) / 100;
+});
+
+document.querySelectorAll('.ep-zoom-control-wrapper button').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+        if (btn.classList.contains('add') && zoom_input.value < 100) {
+            zoom_input.value = parseInt(zoom_input.value) + 1;
+        } else if (zoom_input.value > 0) {
+            zoom_input.value = parseInt(zoom_input.value) - 1;
+        }
+
+        const zoomValue = parseInt(zoom_input.value);
+        const scaleValue = zoomValue / 100.0 + 1;
+        const newWidth = initialWidth * scaleValue;
+        const newHeight = initialHeight * scaleValue;
+
+        images_wrapper.style.transform = `scale(${scaleValue})`;
+        images_wrapper.style.width = newWidth + 'px';
+        images_wrapper.style.height = newHeight + 'px';
+
+        ep_wrapper.scrollTop = (maxScroll * (100 - zoomValue)) / 100;
+    });
+});
+
+// =========================zoom part end================
+  //   ep_wrapper.addEventListener('scroll',f=>{
+  //     zoom_input.value = 100 - ((ep_wrapper.scrollTop/maxScrollY) * 100);
+  //   })
+  
+    // window.innerWidth<750 && ep_wrapper.scroll(maxScrollX* 0.5 ,maxScrollY * 0.5);
+  
+  //   zoom_input.addEventListener('input',e=>{
+   
+  //     ep_wrapper.scrollTop = maxScrollY * ((100-parseInt(e.target.value))/(100)) ;
+  //   })
+  // document.querySelectorAll('.ep-zoom-control-wrapper button').forEach(btn=>{
+  //   btn.addEventListener('click',e=>{
+  //     btn.classList.contains('add')? ((zoom_input.value < 100) && (zoom_input.value = parseInt(zoom_input.value) + 1)) : (zoom_input.value > 0) && (zoom_input.value = parseInt(zoom_input.value) - 1);
+      
+  //           ep_wrapper.scrollTop = maxScrollY * ((100-parseInt(zoom_input.value))/(100)) ;
+  //   })
+  // })
+
+  let zoom_control_main = document.querySelector('.ep-zoom-control-main');
+  let list_view=document.querySelector('.ep-list');
+  let exploded_view=document.querySelector('.ep-exploded');
+  let view_controller_btns= document.querySelectorAll('.ep-view-controller [data-view]');
+  view_controller_btns.forEach(btn=>{
+    btn.addEventListener('click',e=>{
+      view_controller_btns.forEach(btn2=>btn2.classList.remove('active'))
+      if(btn.dataset.view=='exploded'){
+        exploded_view.style.display="block";
+        list_view.style.display="none";
+        (window.innerWidth>767) && (zoom_control_main.style.display='block');
+      }
+      else{
+        exploded_view.style.display="none";
+        list_view.style.display="block";
+        zoom_control_main.style.display='none';
+      }
+      btn.classList.add('active');
+    })
+  })
+
+  // Image draggable code 
+  
+  // let images=document.querySelectorAll('.image-main'),
+  //   mobile_info_main = document.querySelector('.mpi-main'),
+  //   mobile_infos = mobile_info_main.querySelectorAll('.mpi-main .mpi-row-main'),
+  //   mobile_info_cancel = mobile_info_main.querySelector('.mpi-cancel');
+  // images.forEach(image=>{dragElement(image)});
+  // images.forEach(img=>{
+  //   img.addEventListener('click',e=>{
+  //     console.log('clicked');
+  //     if(window.innerWidth<768){
+  //       let show_info =false;
+  //       mobile_infos.forEach(info=>{
+  //         if(info.dataset.id == e.currentTarget.id){
+  //           info.style.display = 'block';
+  //           show_info = true;
+  //         }else{
+  //           info.style.display = 'none';
+  //         }
+  //       })
+  //       show_info && mobile_info_main.classList.add('mpi-main-visible');
+  //     }
+  //   })
+  // })
+  document.addEventListener('DOMContentLoaded',e=>{
+      let images = document.querySelectorAll('.image-main'),
+      mobile_info_main = document.querySelector('.mpi-main'),
+      mobile_infos = mobile_info_main.querySelectorAll('.mpi-main .mpi-row-main'),
+      mobile_info_cancel = mobile_info_main.querySelector('.mpi-cancel');
+    
+     images.forEach(image => {
+      dragElement(image);
+      let clickTimer;
+      let gotoLink=true;
+      image.addEventListener('mousedown', function() {
+          clickTimer = setTimeout(function() {
+              // Long click action (zoom_control_main works)
+              console.log('Long click');
+              clearTimeout(clickTimer);
+              gotoLink=false;
+          }, 100); 
+      });
+  
+      image.addEventListener('mouseup', function() {
+          clearTimeout(clickTimer);
+          if(gotoLink)window.location.href=image.dataset.url;
+          gotoLink = true;
+          console.log('Instant click');
+          // if(image.dataset.url){
+          //   window.location.href=image.dataset.url
+          // }
+          if (window.innerWidth < 768) {
+              let show_info = false;
+              mobile_infos.forEach(info => {
+                  if (info.dataset.id == image.id) {
+                      info.style.display = 'block';
+                      show_info = true;
+                  } else {
+                      info.style.display = 'none';
+                  }
+              });
+              show_info && mobile_info_main.classList.add('mpi-main-visible');
+          }
+      });
+      //  image.addEventListener('touchstart', function() {
+      //     images.forEach(img2=>img2.querySelector('.hover_img').classList.remove('opa-1'));
+      //     image.querySelector('.hover_img').classList.add('opa-1');
+      //     clickTimer = setTimeout(function() {
+      //         // Long click action (zoom_control_main works)
+      //         console.log('Long click');
+      //         clearTimeout(clickTimer);
+      //     }, 100);
+      // });
+      //  image.addEventListener('touchend', function() {
+      //     clearTimeout(clickTimer);
+      //     console.log('Instant click');
+      //       let show_info = false;
+      //       mobile_infos.forEach(info => {
+      //           if (info.dataset.id == image.id) {
+      //               info.style.display = 'block';
+      //               show_info = true;
+      //           } else {
+      //               info.style.display = 'none';
+      //           }
+      //       });
+      //       show_info && mobile_info_main.classList.add('mpi-main-visible');
+      // });
+  });
+       mobile_info_main.addEventListener('click', function(event) {
+          if (event.target.classList.contains('mpi-cancel')) {
+              console.log('cancel');
+              mobile_info_main.classList.remove('mpi-main-visible');
+          }
+      });
+  
+    document.addEventListener('click',e=>{
+      (!e.target.closest('.mpi-main') && !e.target.closest('.image-main')) && (mobile_info_main.classList.remove('mpi-main-visible'))
+    })
+    
+  })
+// function dragElement(elmnt) {
+//   var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+//     elmnt.onmousedown = dragMouseDown;
+//     elmnt.ontouchstart = dragTouchDown;
+  
+//   function dragTouchDown(e){
+//     e = e || window.event;
+//      e.preventDefault();
+//     pos3 = e.changedTouches[0].clientX;
+//     pos4 = e.changedTouches[0].clientY;
+//     document.ontouchend = closeTouchElement;
+//     document.ontouchmove = elementTouchDrag;
+ 
+//   }
+//   function elementTouchDrag(e){
+//     e = e || window.event;
+//     // e.preventDefault();
+//     pos1 = pos3 - e.changedTouches[0].clientX;
+//     pos2 = pos4 - e.changedTouches[0].clientY;
+//     pos3 = e.changedTouches[0].clientX;
+//     pos4 = e.changedTouches[0].clientY;
+//     elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+//     elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+//     elmnt.style.zIndex=1;
+//   }
+//   function closeTouchElement(e){
+//     document.ontouchmove = null;
+//     document.ontouchmove = null;
+//     elmnt.style.zIndex='unset';
+//   }
+//   function dragMouseDown(e) {
+//     e = e || window.event;
+//      e.preventDefault();
+//     // get the mouse cursor position at startup:
+//     pos3 = e.clientX;
+//     pos4 = e.clientY;
+//     document.onmouseup = closeDragElement;
+//     // call a function whenever the cursor moves:
+//     document.onmousemove = elementDrag;
+//   }
+
+//   function elementDrag(e) {
+//     e = e || window.event;
+//     e.preventDefault();
+//     // calculate the new cursor position:
+//     pos1 = pos3 - e.clientX;
+//     pos2 = pos4 - e.clientY;
+//     pos3 = e.clientX;
+//     pos4 = e.clientY;
+//     // set the element's new position:
+//     elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+//     elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+//   }
+
+//   function closeDragElement() {
+//     // stop moving when mouse button is released:
+//     document.onmouseup = null;
+//     document.onmousemove = null;
+//   }
+// }
+
+
+</script>
+{% schema %}
+{
+  "name": "Exploding parts",
+  "settings": [
+    {
+      "type":"text",
+      "id":"headline",
+      "label":"Headline"
+    },
+    {
+       "type":"range",
+      "id":"height",
+      "label":"Section height",
+      "min":0,
+      "max":500,
+      "step":5,
+      "default":200,
+      "unit":"%"
+    },
+     {
+      "type":"range",
+      "id":"height-mob",
+      "label":"Section height(Mobile)",
+      "min":0,
+      "max":500,
+      "step":5,
+      "default":200,
+      "unit":"%"
+    },
+     {
+      "type":"range",
+      "id":"width-mob",
+      "label":"Section Width(Mobile)",
+      "min":0,
+      "max":500,
+      "step":5,
+      "default":200,
+      "unit":"%"
+    }
+  ],
+  "blocks":[
+    {
+      "type":"image",
+      "name":"image",
+      "settings":[
+        {
+          "type":"text",
+          "id":"hover-text-headline",
+          "label":"Hover Text Headline"
+        },
+        {
+          "type":"image_picker",
+          "id":"image",
+          "label":"Image"
+        },
+        {
+          "type":"image_picker",
+          "id":"hover-image",
+          "label":"Hover Image"
+        },
+        {
+          "type":"number",
+          "id":"image-index",
+          "label":"Image index number"
+        },
+        {
+          "type":"text",
+          "id":"hover-text",
+          "label":"Hover Text"
+        },
+        {
+          "type":"url",
+          "id":"url",
+          "label":"Url"
+        },
+        {
+          "type":"number",
+          "id":"width",
+          "label":"Image width",
+          "default":30
+        },
+        {
+          "type":"number",
+          "id":"width-mob",
+          "label":"Image width(Mobile)",
+          "default":30
+        },
+        {
+          "type":"number",
+          "id":"rotation",
+          "label":"Image Rotation",
+          "default":0
+        },
+        {
+          "type":"number",
+          "id":"rotation-mob",
+          "label":"Image Rotation(Mobile)",
+          "default":0
+        },
+        {
+          "type":"number",
+          "id":"position-x",
+          "label":"Horizontal Image position",
+          "default":30
+        },
+        {
+          "type":"number",
+          "id":"position-x-mob",
+          "label":"Horizontal Image position(Mobile)",
+          "default":30
+        },
+        {
+          "type":"number",
+          "id":"position-y",
+          "label":"Vertical Image position",
+          "default":30
+        },
+        {
+          "type":"number",
+          "id":"position-y-mob",
+          "label":"Vertical Image position(Mobile)",
+          "default":30
+        }
+      ]
+    }
+  ],
+  "presets":[
+    {
+      "name":"Exploding Parts"
+    }
+  ]
+}
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}
