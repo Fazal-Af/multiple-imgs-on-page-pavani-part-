@@ -1,0 +1,78 @@
+ // ===========================zoom part===================
+
+const initialWidth = images_wrapper.offsetWidth;
+const initialHeight = images_wrapper.offsetHeight;
+
+zoom_input.addEventListener('input', (e) => {
+    const zoomValue = parseInt(e.target.value);
+    const scaleValue = zoomValue / 100.0 + 1;
+    const newWidth = initialWidth * scaleValue;
+    const newHeight = initialHeight * scaleValue;
+
+    images_wrapper.style.transform = `scale(${scaleValue})`;
+    images_wrapper.style.width = newWidth + 'px';
+    images_wrapper.style.height = newHeight + 'px';
+
+    ep_wrapper.scrollTop = (maxScroll * (100 - zoomValue)) / 100;
+});
+
+document.querySelectorAll('.ep-zoom-control-wrapper button').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+        if (btn.classList.contains('add') && zoom_input.value < 100) {
+            zoom_input.value = parseInt(zoom_input.value) + 1;
+        } else if (zoom_input.value > 0) {
+            zoom_input.value = parseInt(zoom_input.value) - 1;
+        }
+
+        const zoomValue = parseInt(zoom_input.value);
+        const scaleValue = zoomValue / 100.0 + 1;
+        const newWidth = initialWidth * scaleValue;
+        const newHeight = initialHeight * scaleValue;
+
+        images_wrapper.style.transform = `scale(${scaleValue})`;
+        images_wrapper.style.width = newWidth + 'px';
+        images_wrapper.style.height = newHeight + 'px';
+
+        ep_wrapper.scrollTop = (maxScroll * (100 - zoomValue)) / 100;
+    });
+});
+
+// -------------------drag part------------
+
+let isDragging = false;
+let startScrollX = 0;
+let startScrollY = 0;
+let startMouseX = 0;
+let startMouseY = 0;
+
+images_wrapper.addEventListener('mousedown', (e) => {
+    if (e.target === images_wrapper) {
+        isDragging = true;
+        startMouseX = e.clientX;
+        startMouseY = e.clientY;
+        startScrollX = ep_wrapper.scrollLeft;
+        startScrollY = ep_wrapper.scrollTop;
+
+        images_wrapper.style.cursor = 'grab';
+        e.preventDefault();
+    }
+});
+
+window.addEventListener('mousemove', (e) => {
+    if (isDragging) {
+        const deltaX = e.clientX - startMouseX;
+        const deltaY = e.clientY - startMouseY;
+        ep_wrapper.scrollLeft = startScrollX - deltaX;
+        ep_wrapper.scrollTop = startScrollY - deltaY;
+    }
+});
+
+window.addEventListener('mouseup', () => {
+    isDragging = false;
+    images_wrapper.style.cursor = 'auto';
+});
+
+  
+  // -------------------drag part end------------
+  
+// =========================zoom part end================
